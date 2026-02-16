@@ -5,8 +5,8 @@ from http.client import HTTPConnection
 
 import pytest
 
-from api.models import NoteRepository, NoteService
-from api.notes_api import NotesHandler, create_server
+from app.models import NoteRepository, NoteService
+from app.notes_api import NotesHandler, create_server
 
 
 @pytest.fixture(scope="module")

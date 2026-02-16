@@ -1,4 +1,4 @@
-from api.notes_api import run
+from app.notes_api import run
 
 
 if __name__ == "__main__":
