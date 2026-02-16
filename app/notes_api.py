@@ -5,7 +5,7 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from typing import Tuple
 
-from api.models import NoteService
+from app.models import NoteService
 
 
 class NotesHandler(BaseHTTPRequestHandler):
