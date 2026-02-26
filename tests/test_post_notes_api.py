@@ -1,19 +1,8 @@
-import json
-
-
-def test_create_note_success(api_request):
-    status, data = api_request(
-        "POST",
-        "/notes",
-        {"title": "Новая заметка", "content": "Текст заметки"},
-    )
-
-    assert status == 201
-    payload = json.loads(data)
-    assert payload["id"] > 0
-    assert payload["title"] == "Новая заметка"
-    assert payload["content"] == "Текст заметки"
-
+def test_create_note_success(get_notes, setup_teardown_note):
+    notes = get_notes()
+    created_note = next(note for note in notes if note["id"] == setup_teardown_note)
+    assert created_note["title"] == "Новая заметка"
+    assert created_note["content"] == "Текст заметки"
 
 def test_create_note_requires_title_and_content(api_request):
     status, data = api_request("POST", "/notes", {"title": "", "content": "Есть контент"})
