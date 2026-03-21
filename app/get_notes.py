@@ -1,8 +1,9 @@
 import json
 
-from api.base_api import send_request
+from api.base_api import BaseApi
 
 
-def get_notes():
-    status, raw_data = send_request("GET", "/notes")
-    return status, json.loads(raw_data)
+class GetNotes(BaseApi):
+    def get_notes(self):
+        status, raw_data = self.send_request("GET", "/notes")
+        return status, json.loads(raw_data)

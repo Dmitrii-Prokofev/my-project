@@ -1,6 +1,6 @@
-from api.base_api import send_request
+from api.base_api import BaseApi
 
 
-def delete_note(note_id: int):
-    status, raw_data = send_request("DELETE", f"/notes/{note_id}")
-    return status, raw_data
+class DeleteNotes(BaseApi):
+    def delete_note(self, note_id: int):
+        return self.send_request("DELETE", f"/notes/{note_id}")

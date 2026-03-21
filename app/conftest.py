@@ -3,10 +3,12 @@ import time
 
 import pytest
 
-from api.base_api import set_base_url
-from api.delete_notes import delete_note
-from api.get_notes import get_notes
-from api.post_notes import post_note
+from api.base_api import BaseApi
+from api.delete_notes import DeleteNotes
+from api.get_notes import GetNotes
+from api.post_notes import PostNotes
+from api.post_authorization import PostAuthorization
+from api.post_registration import PostRegistration
 from app.models import NoteRepository, NoteService
 from app.notes_api import NotesHandler, create_server
 
@@ -14,7 +16,7 @@ from app.notes_api import NotesHandler, create_server
 @pytest.fixture(scope="session", autouse=True)
 def api_server():
     NotesHandler.service = NoteService(NoteRepository())
-    set_base_url("http://localhost:8000")
+    BaseApi.base_url = "http://localhost:8000"
 
     server = create_server()
     thread = threading.Thread(target=server.serve_forever)
@@ -28,18 +30,48 @@ def api_server():
     thread.join()
 
 
-@pytest.fixture(autouse=True)
-def clean_notes(api_server):
-    status, notes = get_notes()
-    if status == 200:
-        for note in notes:
-            delete_note(note["id"])
-
-    yield
+@pytest.fixture
+def get_notes(api_server):
+    return GetNotes()
 
 
 @pytest.fixture
-def created_note_id(api_server):
-    status, note = post_note("Новая заметка", "Текст заметки")
+def post_notes(api_server):
+    return PostNotes()
+
+
+@pytest.fixture
+def delete_notes(api_server):
+    return DeleteNotes()
+
+
+@pytest.fixture
+def post_authorization(api_server):
+    return PostAuthorization()
+
+
+@pytest.fixture
+def post_registration(api_server):
+    return PostRegistration()
+
+
+@pytest.fixture(autouse=True)
+def clean_notes(get_notes, delete_notes):
+    status, notes = get_notes.get_notes()
+    if status == 200:
+        for note in notes:
+            delete_notes.delete_note(note["id"])
+
+    yield
+
+    status, notes = get_notes.get_notes()
+    if status == 200:
+        for note in notes:
+            delete_notes.delete_note(note["id"])
+
+
+@pytest.fixture
+def created_note_id(post_notes):
+    status, data = post_notes.create_note("Новая заметка", "Текст заметки")
     assert status == 201
-    return note["id"]
+    return data["id"]
