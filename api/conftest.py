@@ -9,8 +9,8 @@ from api.get_notes import GetNotes
 from api.post_notes import PostNotes
 from api.post_authorization import PostAuthorization
 from api.post_registration import PostRegistration
-from app.models import NoteRepository, NoteService
-from app.notes_api import NotesHandler, create_server
+from api.models import NoteRepository, NoteService
+from api.notes_api import NotesHandler, create_server
 
 
 @pytest.fixture(scope="session", autouse=True)
